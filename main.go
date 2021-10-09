@@ -32,7 +32,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func runCommand(path string) {
 	out, _ := exec.Command("go", "list", "-json", "-m", "-versions", path).Output()
-	//var u UrlPath`
 	u := new(UrlPath)
 	err := json.Unmarshal(out, u)
 	if err != nil {
