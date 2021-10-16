@@ -29,7 +29,7 @@ type Result struct {
 func handler(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Path[1:]
 
-	results, err := runCommand(q, w)
+	results, err := runCommand(q)
 	if err != nil {
 		log.Println(err)
 	}
@@ -40,7 +40,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func runCommand(path string, w http.ResponseWriter) ([]Result, error) {
+func runCommand(path string) ([]Result, error) {
 	versions, err := runTipOne(path)
 	if err != nil {
 		log.Println(err)
