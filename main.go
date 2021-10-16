@@ -85,7 +85,7 @@ func runTipTwo(path string) string {
 	exec.Command("go", "get", path).Output()
 	filePath, _ := exec.Command("go", "list", "-f", "\"{{.Dir}}\"", "-m", path).Output()
 	fp := strings.Replace(strings.TrimSpace(string(filePath)), `"`, ``, -1)
-	return string(fp)
+	return fp
 }
 
 func runTipThree(path string) string {
