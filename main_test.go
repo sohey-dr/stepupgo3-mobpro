@@ -11,17 +11,17 @@ func TestRunSuccess(t *testing.T) {
 		t.Fatalf("failed test %#v", err)
 	}
 	if len(results) == 0 {
-		t.Fatal("failed test")
+		t.Fatal("resultsが空です")
 	}
 }
 
-func TestRunTipOneSuccess(t *testing.T) {
-	versions, err := runTipOne("github.com/gostaticanalysis/skeleton/v2")
+func TestTipOneSuccess(t *testing.T) {
+	versions, err := tipOne("github.com/gostaticanalysis/skeleton/v2")
 	if err != nil {
 		t.Fatalf("failed test %#v", err)
 	}
 	if len(versions) == 0 {
-		t.Fatal("failed test")
+		t.Fatal("versionsが空です")
 	}
 	for _, version := range versions {
 		if !strings.HasPrefix(version, "v2") {
@@ -30,17 +30,23 @@ func TestRunTipOneSuccess(t *testing.T) {
 	}
 }
 
-func TestRunTipTwoSuccess(t *testing.T) {
-	versions, err := runTipTwo("github.com/gostaticanalysis/skeleton/v2")
+func TestTipTwoSuccess(t *testing.T) {
+	path := "github.com/gostaticanalysis/skeleton/v2"
+	filePath, err := tipTwo(path)
 	if err != nil {
 		t.Fatalf("failed test %#v", err)
 	}
-	if len(versions) == 0 {
-		t.Fatal("failed test")
+	if filePath == "" {
+		t.Fatal("filePathが空です")
 	}
-	for _, version := range versions {
-		if !strings.HasPrefix(version, "v2") {
-			t.Fatal("failed test")
-		}
+	if !strings.Contains(filePath, path) {
+		t.Fatal("対象のモジュールを検索できてません")
+	}
+}
+
+func TestTipThreeSuccess(t *testing.T) {
+	output, _ := tipThree("./...")
+	if !strings.Contains(output, "{") {
+		t.Fatal("対象のモジュールをgo vetできていません")
 	}
 }
