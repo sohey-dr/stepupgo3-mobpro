@@ -29,3 +29,18 @@ func TestRunTipOneSuccess(t *testing.T) {
 		}
 	}
 }
+
+func TestRunTipTwoSuccess(t *testing.T) {
+	versions, err := runTipTwo("github.com/gostaticanalysis/skeleton/v2")
+	if err != nil {
+		t.Fatalf("failed test %#v", err)
+	}
+	if len(versions) == 0 {
+		t.Fatal("failed test")
+	}
+	for _, version := range versions {
+		if !strings.HasPrefix(version, "v2") {
+			t.Fatal("failed test")
+		}
+	}
+}
