@@ -40,8 +40,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func runCommand(path string) ([]Result, error) {
-	versions, err := runTipOne(path)
+func run(path string) ([]Result, error) {
+	versions, err := tipOne(path)
 	if err != nil {
 		log.Println(err)
 	}
@@ -70,7 +70,8 @@ func runCommand(path string) ([]Result, error) {
 	return results, nil
 }
 
-func runTipOne(path string) ([]string, error) {
+// 指定したモジュールのバージョンを取得して、スライスにして返す
+func tipOne(path string) ([]string, error) {
 	out, _ := exec.Command("go", "list", "-json", "-m", "-versions", path).Output()
 	u := new(UrlPath)
 	err := json.Unmarshal(out, u)
@@ -81,14 +82,16 @@ func runTipOne(path string) ([]string, error) {
 	return u.Versions, nil
 }
 
-func runTipTwo(path string) string {
+// モジュールをgo getして保存先を取得してそのパスを返す
+func tipTwo(path string) (string, error) {
 	exec.Command("go", "get", path).Output()
 	filePath, _ := exec.Command("go", "list", "-f", "\"{{.Dir}}\"", "-m", path).Output()
 	fp := strings.Replace(strings.TrimSpace(string(filePath)), `"`, ``, -1)
 	return fp
 }
 
-func runTipThree(path string) string {
+//　指定したモジュールをge vetする
+func tipThree(path string) (string, error) {
 	cmd := exec.Command("go", "vet", "-json", path)
 	out, err := cmd.CombinedOutput()
 	if err != nil {

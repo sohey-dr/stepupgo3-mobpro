@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func TestRunCommandSuccess(t *testing.T) {
-	results, err := runCommand("github.com/gostaticanalysis/skeleton/v2")
+func TestRunSuccess(t *testing.T) {
+	results, err := run("github.com/gostaticanalysis/skeleton/v2")
 	if err != nil {
 		t.Fatalf("failed test %#v", err)
 	}
