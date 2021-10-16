@@ -29,7 +29,12 @@ type Result struct {
 func handler(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Path[1:]
 
-	results, err := runCommand(q)
+	if !strings.Contains(q, ".com") {
+		fmt.Fprintln(w, "正しいモジュールのパスではありません")
+		return
+	}
+
+	results, err := run(q)
 	if err != nil {
 		log.Println(err)
 	}
