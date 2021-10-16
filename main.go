@@ -52,10 +52,18 @@ func run(path string) ([]Result, error) {
 		wg.Add(1)
 
 		v := version
-		path := runTipTwo(path + "@" + v)
+		path, err := tipTwo(path + "@" + v)
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+
 		go func() {
 			defer wg.Done()
-			output := runTipThree(path)
+			output, err := tipThree(path)
+			if err != nil {
+				log.Println(err)
+			}
 			result := Result{
 				path:   path,
 				result: output,
@@ -85,9 +93,12 @@ func tipOne(path string) ([]string, error) {
 // モジュールをgo getして保存先を取得してそのパスを返す
 func tipTwo(path string) (string, error) {
 	exec.Command("go", "get", path).Output()
-	filePath, _ := exec.Command("go", "list", "-f", "\"{{.Dir}}\"", "-m", path).Output()
-	fp := strings.Replace(strings.TrimSpace(string(filePath)), `"`, ``, -1)
-	return fp
+	filePath, err := exec.Command("go", "list", "-f", "\"{{.Dir}}\"", "-m", path).Output()
+	if err != nil {
+		return "", err
+	}
+
+	return strings.Replace(strings.TrimSpace(string(filePath)), `"`, ``, -1), nil
 }
 
 //　指定したモジュールをge vetする
@@ -95,7 +106,9 @@ func tipThree(path string) (string, error) {
 	cmd := exec.Command("go", "vet", "-json", path)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
+		// 失敗していなくても出ることがあるためreturnしない
 		log.Println(err)
 	}
-	return string(out)
+
+	return string(out), err
 }
